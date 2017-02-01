@@ -154,7 +154,7 @@ A consumer attaches to a subscription and receives messages.
 
 A normal topic could only be served by a single broker which limits its maximum throughput, partitioned topic as a special type of topic could span across multiple brokers to achieve higher throughput. Partitioned topic need to be explicitly created via admin API/CLI, number of partitions can be specified when creating the topic.
 
-A partitioned topic is actually implemented as N (number of partitions) internal topics, there is no difference between the internal topics and other normal topics on how subscription modes work.
+A partitioned topic is actually implemented as N (number of partitions) internal topics, there is no difference between the internal topics and other normal topics on how subscription modes work, except in case of failover subscription - in this case we try to select different active consumers for different partitions (i.e try to load balance).
 
 ![Partitioned Topic](img/pulsar_partitioned_topic.jpg)
 
