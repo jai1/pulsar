@@ -675,9 +675,15 @@ public class ModularLoadManagerImpl implements ModularLoadManager, ZooKeeperCach
             final String timeAverageZPath = TIME_AVERAGE_BROKER_ZPATH + "/" + lookupServiceAddress;
             updateLocalBrokerData();
             try {
-                ZkUtils.createFullPathOptimistic(pulsar.getZkClient(), brokerZnodePath, localData.getJsonBytes(),
+                ZkUtils.createFullPathOptimistic(zkClient, brokerZnodePath, localData.getJsonBytes(),
                         ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
             } catch (KeeperException.NodeExistsException e) {
+                long ownerZkSessionId = getBrokerZnodeOwner();
+                if (ownerZkSessionId != 0 && ownerZkSessionId != zkClient.getSessionId()) {
+                    log.error("Broker znode - [{}] is own by different zookeeper-ssession {} ", brokerZnodePath,
+                            ownerZkSessionId);
+                    throw new PulsarServerException("Broker-znode owned by different zk-session " + ownerZkSessionId);
+                }
                 // Node may already be created by another load manager: in this case update the data.
                 zkClient.setData(brokerZnodePath, localData.getJsonBytes(), -1);
             } catch (Exception e) {
@@ -785,5 +791,16 @@ public class ModularLoadManagerImpl implements ModularLoadManager, ZooKeeperCach
                 log.warn("Error when writing time average broker data for {} to ZooKeeper: {}", broker, e);
             }
         }
+    }
+    
+    private long getBrokerZnodeOwner() {
+        try {
+            Stat stat = new Stat();
+            zkClient.getData(brokerZnodePath, false, stat);
+            return stat.getEphemeralOwner();
+        } catch (Exception e) {
+            log.warn("Failed to get stat of {}", brokerZnodePath, e);
+        }
+        return 0;
     }
 }
