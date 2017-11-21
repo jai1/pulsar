@@ -114,6 +114,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import static org.apache.pulsar.broker.cache.ConfigurationCacheService.POLICIES;
+import com.github.zafarkhaja.semver.Version;
+import org.apache.commons.lang.StringUtils;
 
 /**
  */
@@ -127,6 +129,8 @@ public class PersistentTopics extends AdminResource {
 
     protected static final int PARTITIONED_TOPIC_WAIT_SYNC_TIME_MS = 1000;
     private static final int OFFLINE_TOPIC_STAT_TTL_MINS = 10;
+	private static final String DEPRECATED_CLIENT_VERSION_PREFIX = "Pulsar-CPP-v";
+	private static final Version LEAST_SUPPORTED_CLIENT_VERSION_PREFIX = Version.forIntegers(1, 21);
 
     @GET
     @Path("/{property}/{cluster}/{namespace}")
@@ -471,7 +475,11 @@ public class PersistentTopics extends AdminResource {
             @PathParam("destination") @Encoded String destination,
             @QueryParam("authoritative") @DefaultValue("false") boolean authoritative) {
         destination = decode(destination);
-       return getPartitionedTopicMetadata(property, cluster, namespace, destination, authoritative);
+        PartitionedTopicMetadata metadata = getPartitionedTopicMetadata(property, cluster, namespace, destination,
+                authoritative);
+        logInCompatibleClientVersion(DestinationName.get(domain(), property, cluster, namespace, destination),
+                metadata.partitions);
+        return metadata;
     }
 
     @DELETE
@@ -1462,4 +1470,44 @@ public class PersistentTopics extends AdminResource {
             throw new RestException(e.getCause());
         }
     }
+    
+    // as described at : (PR: #836) CPP-client old client lib should not be
+    // allowed to connect on partitioned-topic.
+    // So, all requests from old-cpp-client (< v1.21) must be rejected.
+    // Pulsar client-java lib always passes user-agent as X-Java-$version.
+    // However, cpp-client older than v1.20 (PR #765) never used to pass it.
+    // So, request without user-agent and Pulsar-CPP-vX (X < 1.21) must be
+    // rejected
+    public void logInCompatibleClientVersion(DestinationName destination, int partitions) {
+        if (partitions <= 1 || !pulsar().getConfiguration().isLogClientLibraryVersionEnabled()) {
+            return;
+        }
+        final String userAgent = httpRequest.getHeader("User-Agent");
+        boolean foundUnsupportedVersion = false;
+        if (clientAppId() != null && pulsar().getConfiguration().getSuperUserRoles().contains(clientAppId())) {
+            return;
+        }
+        if (StringUtils.isBlank(userAgent)) {
+            foundUnsupportedVersion = true;
+        } else if (userAgent.contains(DEPRECATED_CLIENT_VERSION_PREFIX)) {
+            try {
+                // Version < 1.20 for cpp-client is not allowed
+                String[] tokens = userAgent.split(DEPRECATED_CLIENT_VERSION_PREFIX);
+                String[] splits = tokens.length > 1 ? tokens[1].split("-")[0].trim().split("\\.") : null;
+                if (splits != null && splits.length > 1) {
+                    if (LEAST_SUPPORTED_CLIENT_VERSION_PREFIX.getMajorVersion() > Integer.parseInt(splits[0])
+                            || LEAST_SUPPORTED_CLIENT_VERSION_PREFIX.getMinorVersion() > Integer.parseInt(splits[1])) {
+                        foundUnsupportedVersion = true;
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("[{}] Failed to parse version {} for {} ", clientAppId(), userAgent, destination.toString());
+            }
+
+        }
+        if (foundUnsupportedVersion) {
+            log.info("[{}] Client lib {} is not allowed to access partitioned topic {}-{}", clientAppId(), userAgent,
+                    destination.toString(), partitions);
+        }
+	}
 }
