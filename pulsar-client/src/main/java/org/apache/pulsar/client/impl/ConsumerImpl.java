@@ -646,6 +646,7 @@ public class ConsumerImpl extends ConsumerBase {
     @Override
     void connectionFailed(PulsarClientException exception) {
         if (System.currentTimeMillis() > subscribeTimeout && subscribeFuture.completeExceptionally(exception)) {
+            log.info("[{}] Consumer creation failed for consumer {}", topic, consumerId);
             setState(State.Failed);
             client.cleanupConsumer(this);
         }
