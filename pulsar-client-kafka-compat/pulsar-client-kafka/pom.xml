@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.apache.pulsar</groupId>
     <artifactId>pulsar-client-kafka-compat</artifactId>
-    <version>1.20.2-incubating-yahoo-SNAPSHOT</version>
+    <version>1.20.2-incubating-yahoo</version>
     <relativePath>..</relativePath>
   </parent>
 
