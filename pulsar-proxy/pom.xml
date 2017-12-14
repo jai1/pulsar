@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.pulsar</groupId>
     <artifactId>pulsar</artifactId>
-    <version>1.20.3-incubating-yahoo-SNAPSHOT</version>
+    <version>1.20.3-incubating-yahoo</version>
   </parent>
 
   <artifactId>pulsar-proxy</artifactId>
