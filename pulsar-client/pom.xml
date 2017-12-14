@@ -169,6 +169,10 @@
                   <pattern>com.yahoo.datasketches</pattern>
                   <shadedPattern>org.apache.pulsar.shade.com.yahoo.datasketches</shadedPattern>
                 </relocation>
+		<relocation>
+		  <pattern>com.yahoo.sketches</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.yahoo.sketches</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
