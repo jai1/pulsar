@@ -2199,6 +2199,7 @@ public class ManagedCursorImpl implements ManagedCursor {
      */
     private static boolean isBkErrorNotRecoverable(int rc) {
         switch (rc) {
+        case BKException.Code.NoSuchEntryException:
         case BKException.Code.NoSuchLedgerExistsException:
         case BKException.Code.ReadException:
         case BKException.Code.LedgerRecoveryException:
