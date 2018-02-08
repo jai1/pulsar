@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.apache.pulsar</groupId>
     <artifactId>pulsar</artifactId>
-    <version>1.20.6-incubating-yahoo</version>
+    <version>1.20.7-incubating-yahoo-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
