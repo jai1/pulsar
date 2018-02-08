@@ -19,11 +19,13 @@
 package org.apache.pulsar.proxy.server;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.pulsar.broker.ServiceConfiguration;
 import org.apache.pulsar.broker.authentication.AuthenticationService;
@@ -98,27 +100,34 @@ public class ProxyService implements Closeable {
             clientConfiguration.setAuthentication(proxyConfig.getBrokerClientAuthenticationPlugin(),
                     proxyConfig.getBrokerClientAuthenticationParameters());
         }
+        if (proxyConfig.isTlsEnabledWithBroker()) {
+            clientConfiguration.setUseTls(true);
+            clientConfiguration.setTlsTrustCertsFilePath(proxyConfig.getTlsTrustCertsFilePath());
+            clientConfiguration.setTlsAllowInsecureConnection(proxyConfig.isTlsAllowInsecureConnection());
+        }
 
         this.client = new PulsarClientImpl(serviceUrl, clientConfiguration, workerGroup);
         this.clientAuthentication = clientConfiguration.getAuthentication();
     }
 
     public void start() throws Exception {
-        localZooKeeperConnectionService = new LocalZooKeeperConnectionService(getZooKeeperClientFactory(),
-                proxyConfig.getZookeeperServers(), proxyConfig.getZookeeperSessionTimeoutMs());
-        localZooKeeperConnectionService.start(new ShutdownService() {
-            @Override
-            public void shutdown(int exitCode) {
-                LOG.error("Lost local ZK session. Shutting down the proxy");
-                Runtime.getRuntime().halt(-1);
-            }
-        });
-
-        discoveryProvider = new BrokerDiscoveryProvider(this.proxyConfig, getZooKeeperClientFactory());
-        this.configurationCacheService = new ConfigurationCacheService(discoveryProvider.globalZkCache);
         ServiceConfiguration serviceConfiguration = createServiceConfiguration(proxyConfig);
         authenticationService = new AuthenticationService(serviceConfiguration);
-        authorizationManager = new AuthorizationManager(serviceConfiguration, configurationCacheService);
+
+        if (!isBlank(proxyConfig.getZookeeperServers()) && !isBlank(proxyConfig.getGlobalZookeeperServers())) {
+            localZooKeeperConnectionService = new LocalZooKeeperConnectionService(getZooKeeperClientFactory(),
+                    proxyConfig.getZookeeperServers(), proxyConfig.getZookeeperSessionTimeoutMs());
+            localZooKeeperConnectionService.start(new ShutdownService() {
+                @Override
+                public void shutdown(int exitCode) {
+                    LOG.error("Lost local ZK session. Shutting down the proxy");
+                    Runtime.getRuntime().halt(-1);
+                }
+            });
+            discoveryProvider = new BrokerDiscoveryProvider(this.proxyConfig, getZooKeeperClientFactory());
+            this.configurationCacheService = new ConfigurationCacheService(discoveryProvider.globalZkCache);
+            authorizationManager = new AuthorizationManager(serviceConfiguration, configurationCacheService);
+        }
 
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
@@ -139,7 +148,7 @@ public class ProxyService implements Closeable {
             ServerBootstrap tlsBootstrap = bootstrap.clone();
             tlsBootstrap.childHandler(new ServiceChannelInitializer(this, proxyConfig, true));
             tlsBootstrap.bind(proxyConfig.getServicePortTls()).sync();
-            LOG.info("Started Pulsar TLS Proxy on port {}", proxyConfig.getWebServicePortTls());
+            LOG.info("Started Pulsar TLS Proxy on port {}", proxyConfig.getServicePortTls());
         }
     }
 

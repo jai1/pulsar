@@ -3925,6 +3925,14 @@ public final class PulsarApi {
     // optional string original_principal = 7;
     boolean hasOriginalPrincipal();
     String getOriginalPrincipal();
+    
+    // optional string original_auth_data = 8;
+    boolean hasOriginalAuthData();
+    String getOriginalAuthData();
+    
+    // optional string original_auth_method = 9;
+    boolean hasOriginalAuthMethod();
+    String getOriginalAuthMethod();
   }
   public static final class CommandConnect extends
       com.google.protobuf.GeneratedMessageLite
@@ -4119,6 +4127,70 @@ public final class PulsarApi {
       }
     }
     
+    // optional string original_auth_data = 8;
+    public static final int ORIGINAL_AUTH_DATA_FIELD_NUMBER = 8;
+    private java.lang.Object originalAuthData_;
+    public boolean hasOriginalAuthData() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    public String getOriginalAuthData() {
+      java.lang.Object ref = originalAuthData_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          originalAuthData_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getOriginalAuthDataBytes() {
+      java.lang.Object ref = originalAuthData_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        originalAuthData_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string original_auth_method = 9;
+    public static final int ORIGINAL_AUTH_METHOD_FIELD_NUMBER = 9;
+    private java.lang.Object originalAuthMethod_;
+    public boolean hasOriginalAuthMethod() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    public String getOriginalAuthMethod() {
+      java.lang.Object ref = originalAuthMethod_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          originalAuthMethod_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getOriginalAuthMethodBytes() {
+      java.lang.Object ref = originalAuthMethod_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        originalAuthMethod_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       clientVersion_ = "";
       authMethod_ = org.apache.pulsar.common.api.proto.PulsarApi.AuthMethod.AuthMethodNone;
@@ -4127,6 +4199,8 @@ public final class PulsarApi {
       protocolVersion_ = 0;
       proxyToBrokerUrl_ = "";
       originalPrincipal_ = "";
+      originalAuthData_ = "";
+      originalAuthMethod_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4170,6 +4244,12 @@ public final class PulsarApi {
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeBytes(7, getOriginalPrincipalBytes());
       }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeBytes(8, getOriginalAuthDataBytes());
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBytes(9, getOriginalAuthMethodBytes());
+      }
     }
     
     private int memoizedSerializedSize = -1;
@@ -4205,6 +4285,14 @@ public final class PulsarApi {
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(7, getOriginalPrincipalBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, getOriginalAuthDataBytes());
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, getOriginalAuthMethodBytes());
       }
       memoizedSerializedSize = size;
       return size;
@@ -4333,6 +4421,10 @@ public final class PulsarApi {
         bitField0_ = (bitField0_ & ~0x00000020);
         originalPrincipal_ = "";
         bitField0_ = (bitField0_ & ~0x00000040);
+        originalAuthData_ = "";
+        bitField0_ = (bitField0_ & ~0x00000080);
+        originalAuthMethod_ = "";
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
       
@@ -4394,6 +4486,14 @@ public final class PulsarApi {
           to_bitField0_ |= 0x00000040;
         }
         result.originalPrincipal_ = originalPrincipal_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.originalAuthData_ = originalAuthData_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.originalAuthMethod_ = originalAuthMethod_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -4420,6 +4520,12 @@ public final class PulsarApi {
         }
         if (other.hasOriginalPrincipal()) {
           setOriginalPrincipal(other.getOriginalPrincipal());
+        }
+        if (other.hasOriginalAuthData()) {
+          setOriginalAuthData(other.getOriginalAuthData());
+        }
+        if (other.hasOriginalAuthMethod()) {
+          setOriginalAuthMethod(other.getOriginalAuthMethod());
         }
         return this;
       }
@@ -4491,6 +4597,16 @@ public final class PulsarApi {
             case 58: {
               bitField0_ |= 0x00000040;
               originalPrincipal_ = input.readBytes();
+              break;
+            }
+            case 66: {
+              bitField0_ |= 0x00000080;
+              originalAuthData_ = input.readBytes();
+              break;
+            }
+            case 74: {
+              bitField0_ |= 0x00000100;
+              originalAuthMethod_ = input.readBytes();
               break;
             }
           }
@@ -4709,6 +4825,78 @@ public final class PulsarApi {
       void setOriginalPrincipal(com.google.protobuf.ByteString value) {
         bitField0_ |= 0x00000040;
         originalPrincipal_ = value;
+        
+      }
+      
+      // optional string original_auth_data = 8;
+      private java.lang.Object originalAuthData_ = "";
+      public boolean hasOriginalAuthData() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      public String getOriginalAuthData() {
+        java.lang.Object ref = originalAuthData_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          originalAuthData_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setOriginalAuthData(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        originalAuthData_ = value;
+        
+        return this;
+      }
+      public Builder clearOriginalAuthData() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        originalAuthData_ = getDefaultInstance().getOriginalAuthData();
+        
+        return this;
+      }
+      void setOriginalAuthData(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000080;
+        originalAuthData_ = value;
+        
+      }
+      
+      // optional string original_auth_method = 9;
+      private java.lang.Object originalAuthMethod_ = "";
+      public boolean hasOriginalAuthMethod() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      public String getOriginalAuthMethod() {
+        java.lang.Object ref = originalAuthMethod_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          originalAuthMethod_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setOriginalAuthMethod(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        originalAuthMethod_ = value;
+        
+        return this;
+      }
+      public Builder clearOriginalAuthMethod() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        originalAuthMethod_ = getDefaultInstance().getOriginalAuthMethod();
+        
+        return this;
+      }
+      void setOriginalAuthMethod(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000100;
+        originalAuthMethod_ = value;
         
       }
       
@@ -6172,6 +6360,18 @@ public final class PulsarApi {
     // required uint64 request_id = 2;
     boolean hasRequestId();
     long getRequestId();
+    
+    // optional string original_principal = 3;
+    boolean hasOriginalPrincipal();
+    String getOriginalPrincipal();
+    
+    // optional string original_auth_data = 4;
+    boolean hasOriginalAuthData();
+    String getOriginalAuthData();
+    
+    // optional string original_auth_method = 5;
+    boolean hasOriginalAuthMethod();
+    String getOriginalAuthMethod();
   }
   public static final class CommandPartitionedTopicMetadata extends
       com.google.protobuf.GeneratedMessageLite
@@ -6250,9 +6450,108 @@ public final class PulsarApi {
       return requestId_;
     }
     
+    // optional string original_principal = 3;
+    public static final int ORIGINAL_PRINCIPAL_FIELD_NUMBER = 3;
+    private java.lang.Object originalPrincipal_;
+    public boolean hasOriginalPrincipal() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public String getOriginalPrincipal() {
+      java.lang.Object ref = originalPrincipal_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          originalPrincipal_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getOriginalPrincipalBytes() {
+      java.lang.Object ref = originalPrincipal_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        originalPrincipal_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string original_auth_data = 4;
+    public static final int ORIGINAL_AUTH_DATA_FIELD_NUMBER = 4;
+    private java.lang.Object originalAuthData_;
+    public boolean hasOriginalAuthData() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getOriginalAuthData() {
+      java.lang.Object ref = originalAuthData_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          originalAuthData_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getOriginalAuthDataBytes() {
+      java.lang.Object ref = originalAuthData_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        originalAuthData_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string original_auth_method = 5;
+    public static final int ORIGINAL_AUTH_METHOD_FIELD_NUMBER = 5;
+    private java.lang.Object originalAuthMethod_;
+    public boolean hasOriginalAuthMethod() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public String getOriginalAuthMethod() {
+      java.lang.Object ref = originalAuthMethod_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          originalAuthMethod_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getOriginalAuthMethodBytes() {
+      java.lang.Object ref = originalAuthMethod_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        originalAuthMethod_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       topic_ = "";
       requestId_ = 0L;
+      originalPrincipal_ = "";
+      originalAuthData_ = "";
+      originalAuthMethod_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -6285,6 +6584,15 @@ public final class PulsarApi {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeUInt64(2, requestId_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getOriginalPrincipalBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getOriginalAuthDataBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, getOriginalAuthMethodBytes());
+      }
     }
     
     private int memoizedSerializedSize = -1;
@@ -6300,6 +6608,18 @@ public final class PulsarApi {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(2, requestId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getOriginalPrincipalBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getOriginalAuthDataBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getOriginalAuthMethodBytes());
       }
       memoizedSerializedSize = size;
       return size;
@@ -6418,6 +6738,12 @@ public final class PulsarApi {
         bitField0_ = (bitField0_ & ~0x00000001);
         requestId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
+        originalPrincipal_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        originalAuthData_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        originalAuthMethod_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
@@ -6459,6 +6785,18 @@ public final class PulsarApi {
           to_bitField0_ |= 0x00000002;
         }
         result.requestId_ = requestId_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.originalPrincipal_ = originalPrincipal_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.originalAuthData_ = originalAuthData_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.originalAuthMethod_ = originalAuthMethod_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -6470,6 +6808,15 @@ public final class PulsarApi {
         }
         if (other.hasRequestId()) {
           setRequestId(other.getRequestId());
+        }
+        if (other.hasOriginalPrincipal()) {
+          setOriginalPrincipal(other.getOriginalPrincipal());
+        }
+        if (other.hasOriginalAuthData()) {
+          setOriginalAuthData(other.getOriginalAuthData());
+        }
+        if (other.hasOriginalAuthMethod()) {
+          setOriginalAuthMethod(other.getOriginalAuthMethod());
         }
         return this;
       }
@@ -6516,6 +6863,21 @@ public final class PulsarApi {
             case 16: {
               bitField0_ |= 0x00000002;
               requestId_ = input.readUInt64();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              originalPrincipal_ = input.readBytes();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              originalAuthData_ = input.readBytes();
+              break;
+            }
+            case 42: {
+              bitField0_ |= 0x00000010;
+              originalAuthMethod_ = input.readBytes();
               break;
             }
           }
@@ -6579,6 +6941,114 @@ public final class PulsarApi {
         requestId_ = 0L;
         
         return this;
+      }
+      
+      // optional string original_principal = 3;
+      private java.lang.Object originalPrincipal_ = "";
+      public boolean hasOriginalPrincipal() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public String getOriginalPrincipal() {
+        java.lang.Object ref = originalPrincipal_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          originalPrincipal_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setOriginalPrincipal(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        originalPrincipal_ = value;
+        
+        return this;
+      }
+      public Builder clearOriginalPrincipal() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        originalPrincipal_ = getDefaultInstance().getOriginalPrincipal();
+        
+        return this;
+      }
+      void setOriginalPrincipal(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000004;
+        originalPrincipal_ = value;
+        
+      }
+      
+      // optional string original_auth_data = 4;
+      private java.lang.Object originalAuthData_ = "";
+      public boolean hasOriginalAuthData() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getOriginalAuthData() {
+        java.lang.Object ref = originalAuthData_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          originalAuthData_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setOriginalAuthData(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        originalAuthData_ = value;
+        
+        return this;
+      }
+      public Builder clearOriginalAuthData() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        originalAuthData_ = getDefaultInstance().getOriginalAuthData();
+        
+        return this;
+      }
+      void setOriginalAuthData(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        originalAuthData_ = value;
+        
+      }
+      
+      // optional string original_auth_method = 5;
+      private java.lang.Object originalAuthMethod_ = "";
+      public boolean hasOriginalAuthMethod() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public String getOriginalAuthMethod() {
+        java.lang.Object ref = originalAuthMethod_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          originalAuthMethod_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setOriginalAuthMethod(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        originalAuthMethod_ = value;
+        
+        return this;
+      }
+      public Builder clearOriginalAuthMethod() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        originalAuthMethod_ = getDefaultInstance().getOriginalAuthMethod();
+        
+        return this;
+      }
+      void setOriginalAuthMethod(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000010;
+        originalAuthMethod_ = value;
+        
       }
       
       // @@protoc_insertion_point(builder_scope:pulsar.proto.CommandPartitionedTopicMetadata)
@@ -7254,6 +7724,18 @@ public final class PulsarApi {
     // optional bool authoritative = 3 [default = false];
     boolean hasAuthoritative();
     boolean getAuthoritative();
+    
+    // optional string original_principal = 4;
+    boolean hasOriginalPrincipal();
+    String getOriginalPrincipal();
+    
+    // optional string original_auth_data = 5;
+    boolean hasOriginalAuthData();
+    String getOriginalAuthData();
+    
+    // optional string original_auth_method = 6;
+    boolean hasOriginalAuthMethod();
+    String getOriginalAuthMethod();
   }
   public static final class CommandLookupTopic extends
       com.google.protobuf.GeneratedMessageLite
@@ -7342,10 +7824,109 @@ public final class PulsarApi {
       return authoritative_;
     }
     
+    // optional string original_principal = 4;
+    public static final int ORIGINAL_PRINCIPAL_FIELD_NUMBER = 4;
+    private java.lang.Object originalPrincipal_;
+    public boolean hasOriginalPrincipal() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getOriginalPrincipal() {
+      java.lang.Object ref = originalPrincipal_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          originalPrincipal_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getOriginalPrincipalBytes() {
+      java.lang.Object ref = originalPrincipal_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        originalPrincipal_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string original_auth_data = 5;
+    public static final int ORIGINAL_AUTH_DATA_FIELD_NUMBER = 5;
+    private java.lang.Object originalAuthData_;
+    public boolean hasOriginalAuthData() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public String getOriginalAuthData() {
+      java.lang.Object ref = originalAuthData_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          originalAuthData_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getOriginalAuthDataBytes() {
+      java.lang.Object ref = originalAuthData_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        originalAuthData_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string original_auth_method = 6;
+    public static final int ORIGINAL_AUTH_METHOD_FIELD_NUMBER = 6;
+    private java.lang.Object originalAuthMethod_;
+    public boolean hasOriginalAuthMethod() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public String getOriginalAuthMethod() {
+      java.lang.Object ref = originalAuthMethod_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          originalAuthMethod_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getOriginalAuthMethodBytes() {
+      java.lang.Object ref = originalAuthMethod_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        originalAuthMethod_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       topic_ = "";
       requestId_ = 0L;
       authoritative_ = false;
+      originalPrincipal_ = "";
+      originalAuthData_ = "";
+      originalAuthMethod_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -7381,6 +7962,15 @@ public final class PulsarApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBool(3, authoritative_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getOriginalPrincipalBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, getOriginalAuthDataBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, getOriginalAuthMethodBytes());
+      }
     }
     
     private int memoizedSerializedSize = -1;
@@ -7400,6 +7990,18 @@ public final class PulsarApi {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, authoritative_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getOriginalPrincipalBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getOriginalAuthDataBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getOriginalAuthMethodBytes());
       }
       memoizedSerializedSize = size;
       return size;
@@ -7520,6 +8122,12 @@ public final class PulsarApi {
         bitField0_ = (bitField0_ & ~0x00000002);
         authoritative_ = false;
         bitField0_ = (bitField0_ & ~0x00000004);
+        originalPrincipal_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        originalAuthData_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
+        originalAuthMethod_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       
@@ -7565,6 +8173,18 @@ public final class PulsarApi {
           to_bitField0_ |= 0x00000004;
         }
         result.authoritative_ = authoritative_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.originalPrincipal_ = originalPrincipal_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.originalAuthData_ = originalAuthData_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.originalAuthMethod_ = originalAuthMethod_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -7579,6 +8199,15 @@ public final class PulsarApi {
         }
         if (other.hasAuthoritative()) {
           setAuthoritative(other.getAuthoritative());
+        }
+        if (other.hasOriginalPrincipal()) {
+          setOriginalPrincipal(other.getOriginalPrincipal());
+        }
+        if (other.hasOriginalAuthData()) {
+          setOriginalAuthData(other.getOriginalAuthData());
+        }
+        if (other.hasOriginalAuthMethod()) {
+          setOriginalAuthMethod(other.getOriginalAuthMethod());
         }
         return this;
       }
@@ -7630,6 +8259,21 @@ public final class PulsarApi {
             case 24: {
               bitField0_ |= 0x00000004;
               authoritative_ = input.readBool();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              originalPrincipal_ = input.readBytes();
+              break;
+            }
+            case 42: {
+              bitField0_ |= 0x00000010;
+              originalAuthData_ = input.readBytes();
+              break;
+            }
+            case 50: {
+              bitField0_ |= 0x00000020;
+              originalAuthMethod_ = input.readBytes();
               break;
             }
           }
@@ -7714,6 +8358,114 @@ public final class PulsarApi {
         authoritative_ = false;
         
         return this;
+      }
+      
+      // optional string original_principal = 4;
+      private java.lang.Object originalPrincipal_ = "";
+      public boolean hasOriginalPrincipal() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getOriginalPrincipal() {
+        java.lang.Object ref = originalPrincipal_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          originalPrincipal_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setOriginalPrincipal(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        originalPrincipal_ = value;
+        
+        return this;
+      }
+      public Builder clearOriginalPrincipal() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        originalPrincipal_ = getDefaultInstance().getOriginalPrincipal();
+        
+        return this;
+      }
+      void setOriginalPrincipal(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        originalPrincipal_ = value;
+        
+      }
+      
+      // optional string original_auth_data = 5;
+      private java.lang.Object originalAuthData_ = "";
+      public boolean hasOriginalAuthData() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public String getOriginalAuthData() {
+        java.lang.Object ref = originalAuthData_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          originalAuthData_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setOriginalAuthData(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        originalAuthData_ = value;
+        
+        return this;
+      }
+      public Builder clearOriginalAuthData() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        originalAuthData_ = getDefaultInstance().getOriginalAuthData();
+        
+        return this;
+      }
+      void setOriginalAuthData(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000010;
+        originalAuthData_ = value;
+        
+      }
+      
+      // optional string original_auth_method = 6;
+      private java.lang.Object originalAuthMethod_ = "";
+      public boolean hasOriginalAuthMethod() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public String getOriginalAuthMethod() {
+        java.lang.Object ref = originalAuthMethod_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          originalAuthMethod_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setOriginalAuthMethod(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        originalAuthMethod_ = value;
+        
+        return this;
+      }
+      public Builder clearOriginalAuthMethod() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        originalAuthMethod_ = getDefaultInstance().getOriginalAuthMethod();
+        
+        return this;
+      }
+      void setOriginalAuthMethod(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000020;
+        originalAuthMethod_ = value;
+        
       }
       
       // @@protoc_insertion_point(builder_scope:pulsar.proto.CommandLookupTopic)

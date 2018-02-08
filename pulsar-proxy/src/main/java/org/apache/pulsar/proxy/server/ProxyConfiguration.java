@@ -34,7 +34,11 @@ public class ProxyConfiguration implements PulsarConfiguration {
 
     // ZooKeeper session timeout
     private int zookeeperSessionTimeoutMs = 30_000;
-
+    
+    // if Service Discovery is Disabled this url should point to the discovery service provider. 
+    private String brokerServiceURL;
+    private String brokerServiceURLTLS;
+    
     // Port to use to server binary-proto request
     private int servicePort = 6650;
     // Port to use to server binary-proto-tls request
@@ -55,7 +59,10 @@ public class ProxyConfiguration implements PulsarConfiguration {
     private Set<String> authenticationProviders = Sets.newTreeSet();
     // Enforce authorization
     private boolean authorizationEnabled = false;
-
+    // Forward client authData to Broker for re authorization
+    // make sure authentication is enabled for this to take effect
+    private boolean forwardAuthorizationCredentials = false;
+            
     // Authentication settings of the proxy itself. Used to connect to brokers
     private String brokerClientAuthenticationPlugin;
     private String brokerClientAuthenticationParameters;
@@ -71,9 +78,37 @@ public class ProxyConfiguration implements PulsarConfiguration {
     private String tlsCertificateFilePath;
     // Path for the TLS private key file
     private String tlsKeyFilePath;
+    // Path for the trusted TLS certificate file
+    private String tlsTrustCertsFilePath;
+    // Accept untrusted TLS certificate from client
+    private boolean tlsAllowInsecureConnection = false;
 
     private Properties properties = new Properties();
 
+    public boolean forwardAuthorizationCredentials() {
+        return forwardAuthorizationCredentials;
+    }
+    
+    public void setForwardAuthorizationCredentials(boolean forwardAuthorizationCredentials) {
+        this.forwardAuthorizationCredentials = forwardAuthorizationCredentials;
+    }
+    
+    public String getBrokerServiceURLTLS() {
+        return brokerServiceURLTLS;
+    }
+    
+    public void setBrokerServiceURLTLS(String discoveryServiceURLTLS) {
+        this.brokerServiceURLTLS = discoveryServiceURLTLS;
+    }
+    
+    public String getBrokerServiceURL() {
+        return brokerServiceURL;
+    }
+    
+    public void setBrokerServiceURL(String discoveryServiceURL) {
+        this.brokerServiceURL = discoveryServiceURL;
+    }
+    
     public String getZookeeperServers() {
         return zookeeperServers;
     }
@@ -160,6 +195,22 @@ public class ProxyConfiguration implements PulsarConfiguration {
 
     public void setTlsKeyFilePath(String tlsKeyFilePath) {
         this.tlsKeyFilePath = tlsKeyFilePath;
+    }
+
+    public String getTlsTrustCertsFilePath() {
+        return tlsTrustCertsFilePath;
+    }
+
+    public void setTlsTrustCertsFilePath(String tlsTrustCertsFilePath) {
+        this.tlsTrustCertsFilePath = tlsTrustCertsFilePath;
+    }
+
+    public boolean isTlsAllowInsecureConnection() {
+        return tlsAllowInsecureConnection;
+    }
+
+    public void setTlsAllowInsecureConnection(boolean tlsAllowInsecureConnection) {
+        this.tlsAllowInsecureConnection = tlsAllowInsecureConnection;
     }
 
     public String getBrokerClientAuthenticationPlugin() {

@@ -19,10 +19,13 @@
 
 package org.apache.pulsar.proxy.server;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.cert.X509Certificate;
 
 import org.apache.pulsar.client.api.Authentication;
+import org.apache.pulsar.client.api.AuthenticationDataProvider;
 import org.apache.pulsar.common.api.Commands;
 import org.apache.pulsar.common.api.PulsarDecoder;
 import org.apache.pulsar.common.api.PulsarLengthFieldFrameDecoder;
@@ -31,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -38,6 +42,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
 
@@ -45,13 +52,23 @@ public class DirectProxyHandler {
 
     private Channel inboundChannel;
     Channel outboundChannel;
+    private String originalPrincipal;
+    private String clientAuthData;
+    private String clientAuthMethod;
+    private boolean forwardAuthData;
+    public static final String TLS_HANDLER = "tls";
 
     private final Authentication authentication;
 
     public DirectProxyHandler(ProxyService service, ProxyConnection proxyConnection, String targetBrokerUrl) {
         this.authentication = service.getClientAuthentication();
         this.inboundChannel = proxyConnection.ctx().channel();
-
+        this.originalPrincipal = proxyConnection.clientAuthRole;
+        this.clientAuthData = proxyConnection.clientAuthData;
+        this.clientAuthMethod = proxyConnection.clientAuthMethod;
+        ProxyConfiguration config = service.getConfiguration();
+        this.forwardAuthData = service.getConfiguration().forwardAuthorizationCredentials();
+        
         // Start the connection attempt.
         Bootstrap b = new Bootstrap();
         // Tie the backend connection on the same thread to avoid context switches when passing data between the 2
@@ -61,6 +78,30 @@ public class DirectProxyHandler {
         b.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
+                if (config.isTlsEnabledWithBroker()) {
+                    SslContextBuilder builder = SslContextBuilder.forClient();
+                    if (config.isTlsAllowInsecureConnection()) {
+                        builder.trustManager(InsecureTrustManagerFactory.INSTANCE);
+                    } else {
+                        if (config.getTlsTrustCertsFilePath().isEmpty()) {
+                            // Use system default
+                            builder.trustManager((File) null);
+                        } else {
+                            File trustCertCollection = new File(config.getTlsTrustCertsFilePath());
+                            builder.trustManager(trustCertCollection);
+                        }
+                    }
+
+                    // Set client certificate if available
+                    AuthenticationDataProvider authData = authentication.getAuthData();
+                    if (authData.hasDataForTls()) {
+                        builder.keyManager(authData.getTlsPrivateKey(),
+                                (X509Certificate[]) authData.getTlsCertificates());
+                    }
+
+                    SslContext sslCtx = builder.build();
+                    ch.pipeline().addLast(TLS_HANDLER, sslCtx.newHandler(ch.alloc()));
+                }
                 ch.pipeline().addLast("frameDecoder",
                         new PulsarLengthFieldFrameDecoder(PulsarDecoder.MaxFrameSize, 0, 4, 0, 4));
                 ch.pipeline().addLast(new ProxyBackendHandler());
@@ -102,8 +143,10 @@ public class DirectProxyHandler {
             if (authentication.getAuthData().hasDataFromCommand()) {
                 authData = authentication.getAuthData().getCommandData();
             }
-            outboundChannel
-                    .writeAndFlush(Commands.newConnect(authentication.getAuthMethodName(), authData, "Pulsar proxy"));
+            ByteBuf command = null;
+            command = Commands.newConnect(authentication.getAuthMethodName(), authData, "Pulsar proxy",
+                    null /* target broker */, originalPrincipal, clientAuthData, clientAuthMethod);
+            outboundChannel.writeAndFlush(command);
             outboundChannel.read();
         }
 
