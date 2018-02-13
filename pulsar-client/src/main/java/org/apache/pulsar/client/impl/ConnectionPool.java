@@ -19,7 +19,6 @@
 package org.apache.pulsar.client.impl;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.cert.X509Certificate;
@@ -32,6 +31,7 @@ import org.apache.pulsar.client.api.AuthenticationDataProvider;
 import org.apache.pulsar.client.api.ClientConfiguration;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.common.api.PulsarLengthFieldFrameDecoder;
+import org.apache.pulsar.common.util.SecurityUtility;
 import org.apache.pulsar.common.util.netty.EventLoopUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +47,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.resolver.dns.DnsNameResolver;
+import io.netty.resolver.dns.DnsNameResolverBuilder;
+import io.netty.util.concurrent.Future;
 
 public class ConnectionPool implements Closeable {
     private final ConcurrentHashMap<InetSocketAddress, ConcurrentMap<Integer, CompletableFuture<ClientCnx>>> pool;
@@ -74,27 +77,17 @@ public class ConnectionPool implements Closeable {
             public void initChannel(SocketChannel ch) throws Exception {
                 ClientConfiguration clientConfig = client.getConfiguration();
                 if (clientConfig.isUseTls()) {
-                    SslContextBuilder builder = SslContextBuilder.forClient();
-                    if (clientConfig.isTlsAllowInsecureConnection()) {
-                        builder.trustManager(InsecureTrustManagerFactory.INSTANCE);
-                    } else {
-                        if (clientConfig.getTlsTrustCertsFilePath().isEmpty()) {
-                            // Use system default
-                            builder.trustManager((File) null);
-                        } else {
-                            File trustCertCollection = new File(clientConfig.getTlsTrustCertsFilePath());
-                            builder.trustManager(trustCertCollection);
-                        }
-                    }
-
+                    SslContext sslCtx;
                     // Set client certificate if available
                     AuthenticationDataProvider authData = clientConfig.getAuthentication().getAuthData();
                     if (authData.hasDataForTls()) {
-                        builder.keyManager(authData.getTlsPrivateKey(),
-                                (X509Certificate[]) authData.getTlsCertificates());
+                        sslCtx = SecurityUtility.createNettySslContextForClient(clientConfig.isTlsAllowInsecureConnection(),
+                        		clientConfig.getTlsTrustCertsFilePath(), (X509Certificate[]) authData.getTlsCertificates(),
+                                authData.getTlsPrivateKey());
+                    } else {
+                        sslCtx = SecurityUtility.createNettySslContextForClient(clientConfig.isTlsAllowInsecureConnection(),
+                        		clientConfig.getTlsTrustCertsFilePath());
                     }
-
-                    SslContext sslCtx = builder.build();
                     ch.pipeline().addLast(TLS_HANDLER, sslCtx.newHandler(ch.alloc()));
                 }
                 ch.pipeline().addLast("frameDecoder", new PulsarLengthFieldFrameDecoder(MaxMessageSize, 0, 4, 0, 4));
@@ -184,7 +177,7 @@ public class ConnectionPool implements Closeable {
             }
 
             cnx.setRemoteHostName(physicalAddress.getHostName());
-            
+
             cnx.connectionFuture().thenRun(() -> {
                 if (log.isDebugEnabled()) {
                     log.debug("[{}] Connection handshake completed", cnx.channel());
