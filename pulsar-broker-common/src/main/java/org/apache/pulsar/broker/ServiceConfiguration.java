@@ -49,12 +49,12 @@ public class ServiceConfiguration implements PulsarConfiguration {
     // Configuration Store connection string
     @FieldContext(required = false)
     private String configurationStoreServers;
-    private int brokerServicePort = 6650;
-    private int brokerServicePortTls = 6651;
+    private Integer brokerServicePort = 6650;
+    private Integer brokerServicePortTls = null;
     // Port to use to server HTTP request
-    private int webServicePort = 8080;
+    private Integer webServicePort = 8080;
     // Port to use to server HTTPS request
-    private int webServicePortTls = 8443;
+    private Integer webServicePortTls = null;
 
     // Hostname or IP address the service binds on.
     private String bindAddress = "0.0.0.0";
@@ -216,7 +216,7 @@ public class ServiceConfiguration implements PulsarConfiguration {
     private int maxConsumersPerSubscription = 0;
 
     /***** --- TLS --- ****/
-    // Enable TLS
+    @Deprecated
     private boolean tlsEnabled = false;
     // Path for the TLS certificate file
     private String tlsCertificateFilePath;
@@ -557,32 +557,32 @@ public class ServiceConfiguration implements PulsarConfiguration {
         this.configurationStoreServers = configurationStoreServers;
     }
 
-    public int getBrokerServicePort() {
-        return brokerServicePort;
+    public Optional<Integer> getBrokerServicePort() {
+        return Optional.ofNullable(brokerServicePort);
     }
 
     public void setBrokerServicePort(int brokerServicePort) {
         this.brokerServicePort = brokerServicePort;
     }
 
-    public int getBrokerServicePortTls() {
-        return brokerServicePortTls;
+    public Optional<Integer> getBrokerServicePortTls() {
+        return Optional.ofNullable(brokerServicePortTls);
     }
 
     public void setBrokerServicePortTls(int brokerServicePortTls) {
         this.brokerServicePortTls = brokerServicePortTls;
     }
 
-    public int getWebServicePort() {
-        return webServicePort;
+    public Optional<Integer> getWebServicePort() {
+        return Optional.ofNullable(webServicePort);
     }
 
     public void setWebServicePort(int webServicePort) {
         this.webServicePort = webServicePort;
     }
 
-    public int getWebServicePortTls() {
-        return webServicePortTls;
+    public Optional<Integer> getWebServicePortTls() {
+        return Optional.ofNullable(webServicePortTls);
     }
 
     public void setWebServicePortTls(int webServicePortTls) {
@@ -935,10 +935,12 @@ public class ServiceConfiguration implements PulsarConfiguration {
         this.maxConsumersPerSubscription = maxConsumersPerSubscription;
     }
 
+    @Deprecated
     public boolean isTlsEnabled() {
-        return tlsEnabled;
+        return tlsEnabled || webServicePortTls != null || brokerServicePortTls != null;
     }
 
+    @Deprecated
     public void setTlsEnabled(boolean tlsEnabled) {
         this.tlsEnabled = tlsEnabled;
     }
