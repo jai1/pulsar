@@ -34,7 +34,7 @@ class Allocator {
     class Impl {
        public:
         // cheap lock to acquire
-        static boost::mutex mutex_;
+        static std::mutex mutex_;
 
         // note: use std::forward_list<> when switching to C++11 mode
         struct Node {
@@ -59,7 +59,7 @@ class Allocator {
         void* pop() {
             if (!head_) {
                 // size = 0
-                boost::lock_guard<boost::mutex> lock(mutex_);
+                boost::lock_guard<std::mutex> lock(mutex_);
 
                 if (!globalPool_) {
                     return NULL;
@@ -86,7 +86,7 @@ class Allocator {
                 bool deleteList = true;
                 {
                     // Move the entries to global pool
-                    boost::lock_guard<boost::mutex> lock(mutex_);
+                    boost::lock_guard<std::mutex> lock(mutex_);
 
                     // If total node count reached max allowed cache limit,
                     // skip adding to global pool.
@@ -195,7 +195,7 @@ template <typename Type, int MaxSize>
 boost::thread_specific_ptr<typename Allocator<Type, MaxSize>::Impl> Allocator<Type, MaxSize>::implPtr_;
 
 template <typename Type, int MaxSize>
-boost::mutex Allocator<Type, MaxSize>::Impl::mutex_;
+std::mutex Allocator<Type, MaxSize>::Impl::mutex_;
 
 template <typename Type, int MaxSize>
 struct Allocator<Type, MaxSize>::Impl::GlobalPool* Allocator<Type, MaxSize>::Impl::globalPool_;

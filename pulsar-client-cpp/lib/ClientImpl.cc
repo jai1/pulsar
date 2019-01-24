@@ -62,7 +62,7 @@ const std::string generateRandomName() {
 
     return hexHash.str();
 }
-typedef boost::unique_lock<boost::mutex> Lock;
+typedef std::unique_lock<std::mutex> Lock;
 
 typedef std::vector<std::string> StringList;
 

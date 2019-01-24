@@ -34,10 +34,10 @@ class ConsumerImpl;
 
 class BatchAcknowledgementTracker {
    private:
-    typedef boost::unique_lock<boost::mutex> Lock;
+    typedef std::unique_lock<std::mutex> Lock;
     typedef std::pair<MessageId, boost::dynamic_bitset<> > TrackerPair;
     typedef std::map<MessageId, boost::dynamic_bitset<> > TrackerMap;
-    boost::mutex mutex_;
+    std::mutex mutex_;
 
     TrackerMap trackerMap_;
 

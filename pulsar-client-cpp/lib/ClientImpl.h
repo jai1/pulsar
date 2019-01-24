@@ -126,7 +126,7 @@ class ClientImpl : public std::enable_shared_from_this<ClientImpl> {
         Closed
     };
 
-    boost::mutex mutex_;
+    std::mutex mutex_;
 
     State state_;
     std::string serviceUrl_;

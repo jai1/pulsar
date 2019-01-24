@@ -133,7 +133,7 @@ class ProducerImpl : public HandlerBase,
     bool encryptMessage(proto::MessageMetadata& metadata, SharedBuffer& payload,
                         SharedBuffer& encryptedPayload);
 
-    typedef boost::unique_lock<boost::mutex> Lock;
+    typedef std::unique_lock<std::mutex> Lock;
 
     ProducerConfiguration conf_;
 

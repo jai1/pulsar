@@ -23,6 +23,8 @@
 
 #include "Future.h"
 
+#include <iostream>
+
 namespace pulsar {
 
 struct WaitForCallback {

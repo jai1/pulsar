@@ -81,8 +81,8 @@ class PartitionedConsumerImpl : public ConsumerImplBase,
     const ConsumerConfiguration conf_;
     typedef std::vector<ConsumerImplPtr> ConsumerList;
     ConsumerList consumers_;
-    boost::mutex mutex_;
-    boost::mutex pendingReceiveMutex_;
+    std::mutex mutex_;
+    std::mutex pendingReceiveMutex_;
     PartitionedConsumerState state_;
     unsigned int unsubscribedSoFar_;
     BlockingQueue<Message> messages_;

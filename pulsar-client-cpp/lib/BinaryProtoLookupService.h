@@ -43,7 +43,7 @@ class BinaryProtoLookupService : public LookupService {
     Future<Result, NamespaceTopicsPtr> getTopicsOfNamespaceAsync(const NamespaceNamePtr& nsName);
 
    private:
-    boost::mutex mutex_;
+    std::mutex mutex_;
     uint64_t requestIdGenerator_;
 
     std::string serviceUrl_;

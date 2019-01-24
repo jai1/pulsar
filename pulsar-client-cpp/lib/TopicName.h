@@ -60,7 +60,7 @@ class TopicName : public ServiceUnitId {
    private:
     static CURL* getCurlHandle();
     static CURL* curl;
-    static boost::mutex curlHandleMutex;
+    static std::mutex curlHandleMutex;
     static bool parse(const std::string& topicName, std::string& domain, std::string& property,
                       std::string& cluster, std::string& namespacePortion, std::string& localName);
     TopicName();
